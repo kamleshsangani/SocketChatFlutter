@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  WebSocketChannel channel = IOWebSocketChannel.connect("wss://ws.ifelse.io/");
+  WebSocketChannel channel = IOWebSocketChannel.connect("wss://demo.piesocket.com/v3/channel_123?api_key=VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV&notify_self");
 
   @override
   MyHomePageState createState() {
