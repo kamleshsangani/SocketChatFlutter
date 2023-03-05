@@ -41,7 +41,7 @@ class ChatPageState extends State<ChatPage>{
       channel!.stream.listen((message) {
         log("$connected");
         setState(() {
-          if(message == "connected"){
+        /*  if(message == "connected"){
             connected = true;
             setState(() { });
             log("Connection established.");
@@ -52,14 +52,19 @@ class ChatPageState extends State<ChatPage>{
             });
           }else if(message == "send:error"){
             log("Message send error");
-          }else if (message.substring(0, 6) == "{'cmd'") {
-            log("Message data");
+          }else */
+          if (message.substring(0, 6) == "{'cmd'") {
             message = message.replaceAll(RegExp("'"), '"');
             var jsonData = json.decode(message);
-            messageList.add(MessageData(
-              messageText: jsonData["messageText"], userId: jsonData["userId"], isMe: false,));
-            setState(() {
-            });
+            if (jsonData["cmd"] == "receive") {
+              log("Message data");
+              connected = true;
+              messageList.add(MessageData(
+                messageText: jsonData["messageText"],
+                userId: jsonData["userId"],
+                isMe: false,));
+              setState(() {});
+            }
           }
         });
       },
@@ -80,7 +85,7 @@ class ChatPageState extends State<ChatPage>{
 
   Future<void> sendMessage(String sendingMessage, String id) async {
       String msg = "{'auth':'$auth','cmd':'send','userId':'$id', 'messageText':'$sendingMessage'}";
-      log("Text===$sendingMessage");
+      FocusScope.of(context).unfocus();
       setState(() {
         textFieldController.text = "";
         messageList.add(MessageData(
