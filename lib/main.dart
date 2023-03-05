@@ -1,78 +1,21 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:web_socket_channel/io.dart';
+import 'chat_screen.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyHomePage(),
+      title: 'Flutter Chat App',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const ChatPage(),
     );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  WebSocketChannel channel = IOWebSocketChannel.connect("wss://demo.piesocket.com/v3/channel_123?api_key=VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV&notify_self");
-
-  @override
-  MyHomePageState createState() {
-    return MyHomePageState();
-  }
-}
-
-class MyHomePageState extends State<MyHomePage> {
-  final TextEditingController _controller = TextEditingController();
-  @override
-  Widget build(BuildContext context) {
-    return  Scaffold(
-      appBar: AppBar(
-        title:  const Text("Web Socket"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Form(
-              child: TextFormField(
-                decoration: const InputDecoration(labelText: "Send any message to the server"),
-                controller: _controller,
-              ),
-            ),
-            StreamBuilder(
-              stream: widget.channel.stream,
-              builder: (context, snapshot) {
-                return Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Text(snapshot.hasData ? '${snapshot.data}' : ''),
-                );
-              },
-            )
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.send),
-        onPressed: sendData,
-      ),
-    );
-  }
-
-  void sendData() {
-    if (_controller.text.isNotEmpty) {
-      log("==>${_controller.text}");
-      widget.channel.sink.add(_controller.text);
-
-    }
-  }
-
-  @override
-  void dispose() {
-    widget.channel.sink.close();
-    super.dispose();
   }
 }
