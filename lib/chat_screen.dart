@@ -37,7 +37,7 @@ class ChatPageState extends State<ChatPage>{
 
   void channelConnect(){ //function to connect
     try{
-      channel = IOWebSocketChannel.connect("wss://demo.piesocket.com/v3/channel_123?api_key=VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV&notify_self"); //channel IP : Port
+      channel = IOWebSocketChannel.connect("wss://websockettest-qkg2.onrender.com/$myId"); //channel IP : Port
       channel!.stream.listen((message) {
         log("$connected");
         setState(() {
