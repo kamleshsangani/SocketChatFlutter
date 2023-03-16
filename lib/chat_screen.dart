@@ -35,36 +35,36 @@ class ChatPageState extends State<ChatPage>{
     super.initState();
   }
 
-  void channelConnect(){ //function to connect
+  void channelConnect(){
     try{
-      channel = IOWebSocketChannel.connect("wss://websockettest-qkg2.onrender.com/$myId"); //channel IP : Port
+      channel = IOWebSocketChannel.connect("ws://192.168.202.246:6060/$myId");//channel IP : Port
       channel!.stream.listen((message) {
-        log("$connected");
+        log(message);
         setState(() {
-        /*  if(message == "connected"){
+          if(message == "connected"){
             connected = true;
             setState(() { });
             log("Connection established.");
-          }else if(message == "send:success"){
+          }
+          else if(message == "send:success"){
             log("Message send success");
             setState(() {
               textFieldController.text = "";
             });
           }else if(message == "send:error"){
             log("Message send error");
-          }else */
-          if (message.substring(0, 6) == "{'cmd'") {
+          }else if (message.substring(0, 6) == "{'cmd'") {
+            log("Message data");
             message = message.replaceAll(RegExp("'"), '"');
             var jsonData = json.decode(message);
-            if (jsonData["cmd"] == "receive") {
-              log("Message data");
-              connected = true;
-              messageList.add(MessageData(
-                messageText: jsonData["messageText"],
-                userId: jsonData["userId"],
-                isMe: false,));
-              setState(() {});
-            }
+
+            messageList.add(MessageData(
+              messageText: jsonData["msgtext"],
+              userId: jsonData["userid"],
+              isMe: false,));
+            setState(() { //update UI after adding data to message model
+
+            });
           }
         });
       },
@@ -84,14 +84,20 @@ class ChatPageState extends State<ChatPage>{
   }
 
   Future<void> sendMessage(String sendingMessage, String id) async {
-      String msg = "{'auth':'$auth','cmd':'send','userId':'$id', 'messageText':'$sendingMessage'}";
+    if(connected == true){
+      String msg = "{'auth':'$auth','cmd':'send','userid':'$id', 'msgtext':'$sendingMessage'}";
+      log("sendJSON---->${msg}");
       FocusScope.of(context).unfocus();
       setState(() {
         textFieldController.text = "";
         messageList.add(MessageData(
           messageText: sendingMessage, userId: myId, isMe: true,));
       });
-      channel!.sink.add(msg);
+      channel!.sink.add(msg); //send message to reciever channel
+    }else{
+      channelConnect();
+      log("Websocket is not connected.");
+    }
   }
 
   @override
