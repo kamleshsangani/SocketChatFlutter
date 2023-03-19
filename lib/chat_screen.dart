@@ -37,7 +37,7 @@ class ChatPageState extends State<ChatPage>{
 
   void channelConnect(){
     try{
-      channel = IOWebSocketChannel.connect("ws://192.168.202.246:6060/$myId");//channel IP : Port
+      channel = IOWebSocketChannel.connect("ws://192.168.202.246:6060/myapp/chat/$myId");//channel IP : Port
       channel!.stream.listen((message) {
         log(message);
         setState(() {
